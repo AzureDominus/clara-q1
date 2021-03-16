@@ -1,5 +1,5 @@
 <template>
-  <div class="tab-container">
+  <div class="tab-view">
       <Tabs></Tabs>
   </div>
 </template>
@@ -13,11 +13,11 @@ export default {
 </script>
 
 <style lang="scss">
-    .tab-container { 
-        height: 100vh;
+    .tab-view {
         display: flex;
         flex-flow: column nowrap;
-        justify-content: center;
+        margin: 60px 20px 30px 20px;
+        border: 1px solid red;
     }
     
 </style>
