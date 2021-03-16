@@ -10,6 +10,11 @@
           <Basic></Basic>
       </div>
     </div>
+    <div class="row">
+        <button class="col btn btn-primary">Back</button>
+        <div class="col"></div>
+        <button class="col btn btn-primary">Next</button>
+    </div>
 </div>
 </template>
 
@@ -23,13 +28,13 @@ export default {
 
 <style scoped lang="scss">
 
-    .tab- {
-        &.bar {
+    .tab {
+        &-bar {
             padding: 20px;
             border: 1px solid black;
         }  
 
-        &.view-body {
+        &-view-body {
             padding: 20px 40px 30px 40px;
         }      
     }
