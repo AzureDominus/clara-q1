@@ -8,7 +8,11 @@
 import Tabs from '../components/Tabs.vue'
 export default {
   components: { Tabs },
-    name: 'SignUp',
+  name: 'SignUp',
+  created() {
+    if(this.$router.currentRoute.name != 'Basic')
+      this.$router.push('/')
+  }
 }
 </script>
 
