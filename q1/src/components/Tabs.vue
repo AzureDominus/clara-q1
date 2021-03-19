@@ -42,18 +42,19 @@ export default {
   }),
   methods: {
     setTab(index) {
-      this.tabIndex = index;
-      this.$router.push(this.tabs[this.tabIndex]);
+      if(this.$refs.comp.validateForm()) {
+        this.tabIndex = index;
+        this.$router.push(this.tabs[this.tabIndex]);
+      }
     },
     nextTab() {
-      // var currentRoute = this.$router.currentRoute.matched[0].components.default.methods;
-      if (this.tabs.length - 1 > this.tabIndex) {
-        this.tabIndex++;
-        this.$router.push(this.tabs[this.tabIndex]);
-      } else {
-        this.beginScan();
-      }
-      // console.log(currentRoute.validateForm())
+      if(this.$refs.comp.validateForm())
+        if (this.tabs.length - 1 > this.tabIndex) {
+          this.tabIndex++;
+          this.$router.push(this.tabs[this.tabIndex]);
+        } else {
+          this.beginScan();
+        }
     },
     backTab() {
       if (this.tabIndex > 0) {

@@ -11,7 +11,7 @@
       </div>
     </div>
     <div class="gap"></div>
-    <form ref="basicForm" @submit.prevent>
+    <form autocomplete="off" ref="form" @submit.prevent>
       <div class="row">
         <div class="col-sm-12 col-md-6">
           <label class="tab-container-input-label" for="fname"
@@ -70,6 +70,7 @@
           >
           <input
             required
+            ref="pass1"
             id="pass1"
             type="password"
             placeholder="Create Password"
@@ -82,6 +83,7 @@
           >
           <input
             required
+            ref="pass2"
             id="pass2"
             type="password"
             placeholder="Confirm Password"
@@ -99,16 +101,22 @@ export default {
   name: "Basic",
   directives: { mask },
   data: () => ({
-      form: ''
+    form: "",
   }),
   methods: {
-      validateForm() {
-          console.log(this.form)
+    validateForm() {
+      if (this.$refs.pass1.value != this.$refs.pass2.value) {
+        this.$refs.pass2.setCustomValidity("Passwords Don't Match");
       }
+      else {
+        this.$refs.pass2.setCustomValidity('');
+      }
+      return this.$refs.form.reportValidity();
+    },
   },
   mounted() {
-    this.form = this.$refs.basicForm
-  }
+    this.form = this.$refs.basicForm;
+  },
 };
 </script>
 
