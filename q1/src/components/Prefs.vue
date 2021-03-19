@@ -6,7 +6,7 @@
         <h3 class="tab-content-title">Your Account Preferences</h3>
         <span class="tab-content-desc"
           >Personalize your account preferences. You can change this information
-          at any time</span
+          at any time <button @click="checkFile">Press meh</button></span
         >
       </div>
     </div>
@@ -59,6 +59,7 @@
         >
         <input
           required
+          @change="handleFileData"
           ref="pic"
           name="pic"
           id="pic"
@@ -75,11 +76,37 @@
 <script>
 export default {
   name: "Prefs",
+  data: () => ({
+    file: "",
+  }),
   methods: {
-    test() {
-      console.log("this is working");
-    }
-  }
+    checkFile() {
+      console.log(this.file);
+    },
+    handleFileData() {
+      this.file = this.$refs.pic.files[0];
+    },
+    uploadFile() {
+      var formData = new FormData();
+      formData.append("file", this.file);
+      this.$http
+        .post("http://localhost/api/proxy.php", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          console.log(response);
+          this.$parent.resource = response.data.resource;
+          setTimeout(() => {
+            this.$parent.checkVirus(response.data.resource);
+          }, 5000);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+  },
 };
 </script>
 

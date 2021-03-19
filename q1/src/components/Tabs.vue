@@ -1,26 +1,26 @@
 <template>
   <div class="container-fluid">
     <template v-if="!done">
-        <div class="row">
-          <div class="tab-bar tab-active col" @click="setTab(0)">Basic</div>
-          <div class="tab-bar col" @click="setTab(1)">Personal</div>
-          <div class="tab-bar col" @click="setTab(2)">Prefs</div>
+      <div class="row">
+        <div class="tab-bar tab-active col" @click="setTab(0)">Basic</div>
+        <div class="tab-bar col" @click="setTab(1)">Personal</div>
+        <div class="tab-bar col" @click="setTab(2)">Prefs</div>
+      </div>
+      <div class="row">
+        <div class="tab-view-body">
+          <keep-alive>
+            <router-view ref="comp"></router-view>
+          </keep-alive>
         </div>
-        <div class="row">
-          <div class="tab-view-body">
-            <keep-alive>
-              <router-view></router-view>
-            </keep-alive>
-          </div>
-        </div>
-        <div class="row">
-          <button class="col btn btn-primary" @click="backTab">Back</button>
-          <div class="col"></div>
-          <button class="col btn btn-primary" @click="nextTab">Next</button>
-        </div>
+      </div>
+      <div class="row">
+        <button class="col btn btn-primary" @click="backTab">Back</button>
+        <div class="col"></div>
+        <button class="col btn btn-primary" @click="nextTab">Next</button>
+      </div>
     </template>
     <div v-if="done" class="row">
-      <div class="upload-info"> {{virusMsg}} </div>
+      <div class="upload-info">{{ virusMsg }}</div>
     </div>
   </div>
 </template>
@@ -37,7 +37,8 @@ export default {
     currentTab: "",
     tabIndex: 0,
     done: false,
-    virusMsg: 'Uploaded file is being scanned for viruses...'
+    virusMsg: "Uploaded file is being scanned for viruses...",
+    resource: "",
   }),
   methods: {
     setTab(index) {
@@ -50,7 +51,7 @@ export default {
         this.tabIndex++;
         this.$router.push(this.tabs[this.tabIndex]);
       } else {
-        this.finishUp();
+        this.beginScan();
       }
       // console.log(currentRoute.validateForm())
     },
@@ -60,21 +61,40 @@ export default {
         this.$router.push(this.tabs[this.tabIndex]);
       }
     },
-    finishUp() {
+    beginScan() {
       this.done = true;
-    //   this.$http
-    //     .post("http://localhost/api/proxy.php", {
-    //         // resource: '8a442cc660923c2ba0ff2a426bc47ad4cdb6721583538863f4aafd6fb9953724'
-    //         file: 
-    //     })
-    //     .then(function (response) {
-    //       console.log(response);
-    //     })
-    //     .catch(function (error) {
-    //       console.log(error);
-    //     });
-    console.log(this.$router.currentRoute.matched[0].components.default.methods);
+      this.$refs.comp.uploadFile();
     },
+    checkVirus(res) {
+      this.$http
+        .post("http://localhost/api/proxy.php", {
+          resource: res,
+        })
+        .then((response) => {
+          console.log(response);
+          if (response.data.response_code != 1) {
+            setTimeout(() => {
+              this.checkVirus(this.resource);
+            }, 15000);
+          }
+          else {
+              this.showResult(response.data);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    showResult(data) {
+        var tmp_msg = `The result is ${data.positives} positives after ${data.total} scans. `;
+        if (100 - ((data.positives * 100) / (data.total * 1.0)) > 95) {
+            tmp_msg += `The file is safe!`;
+        }
+        else
+            tmp_msg += `The file is infected!`;
+
+        this.virusMsg = tmp_msg;
+    }
   },
 };
 </script>
