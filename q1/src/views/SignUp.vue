@@ -21,7 +21,7 @@ export default {
         display: flex;
         flex-flow: column nowrap;
         margin: 60px 20px 30px 20px;
-        border: 1px solid red;
+        // border: 1px solid red;
     }
     
 </style>
