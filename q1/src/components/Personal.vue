@@ -82,18 +82,5 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.gap {
-  margin: 30px;
-}
-.asterik {
-  color: blue;
-}
-.tab-container {
-  &-input {
-    &-label {
-      width: 100%;
-      text-align: left;
-    }
-  }
-}
+@import '../assets/tab-view.scss';
 </style>

@@ -2,44 +2,46 @@
   <div class="container-fluid">
     <template v-if="!done">
       <!-- Actual tabs begin here -->
-      <div class="row tab-group">
-        <div class="tab-progress"></div>
-        <div
-          :class="{ 'tab-active': activeTab('basic') }"
-          class="tab-bar col"
-          @click="setTab(0)"
-        >
-          <span class="tab-number">1</span>Basic
+      <div class="tab-shadow">
+        <div class="row tab-group">
+          <div
+            :class="{ 'tab-progress-done': activeTab(3) }"
+            ref="progressBar"
+            class="tab-progress"
+          ></div>
+          <div
+            class="tab-active tab-bar col"
+            @click="setTab(0)"
+          >
+            <span class="tab-number">1</span>Basic
+          </div>
+          <div
+            :class="{ 'tab-active': activeTab(2) }"
+            class="tab-bar col"
+            @click="setTab(1)"
+          >
+            <span class="tab-number">2</span>Personal
+          </div>
+          <div
+            :class="{ 'tab-active': activeTab(3) }"
+            class="tab-bar col"
+            @click="setTab(2)"
+          >
+            <span class="tab-number">3</span>Prefs
+          </div>
         </div>
-        <div
-          :class="{ 'tab-active': activeTab('personal') }"
-          ref="tab"
-          class="tab-bar col"
-          @click="setTab(1)"
-        >
-          <span class="tab-number">2</span>Personal
-        </div>
-        <div
-          :class="{ 'tab-active': activeTab('prefs') }"
-          ref="tab"
-          class="tab-bar col"
-          @click="setTab(2)"
-        >
-         <span class="tab-number">3</span>Prefs
+        <!-- Tab view begins here -->
+        <div class="row">
+          <div class="tab-view-body">
+            <keep-alive>
+              <router-view ref="comp"></router-view>
+            </keep-alive>
+          </div>
         </div>
       </div>
-      <!-- Tab view begins here -->
-      <div class="row">
-        <div class="tab-view-body">
-          <keep-alive>
-            <router-view ref="comp"></router-view>
-          </keep-alive>
-        </div>
-      </div>
-      <div class="row">
-        <button class="col btn btn-primary" @click="backTab">Back</button>
-        <div class="col"></div>
-        <button class="col btn btn-primary" @click="nextTab">Next</button>
+      <div class="row tab-btn-group justify-content-end">
+        <button class="col-2 btn btn-primary" @click="backTab">Back</button>
+        <button class="col-2 btn btn-primary" @click="nextTab">Next</button>
       </div>
     </template>
     <div v-if="done" class="row">
@@ -64,8 +66,25 @@ export default {
     resource: "",
   }),
   methods: {
-    activeTab(name) {
-      return this.$router.currentRoute.name.toLowerCase() == name;
+    activeTab(id) {
+      var routeName = this.$router.currentRoute.name.toLowerCase();
+      switch (id) {
+        case 2:
+          if (routeName == this.tabs[1] || routeName == this.tabs[2]) {
+            this.$refs.progressBar.style.width = "66.66%";
+            return true;
+          } else {
+            try {
+              this.$refs.progressBar.style.width = "33.33%";
+            } catch {}
+            return false;
+          }
+        case 3:
+          if (routeName == this.tabs[2]) {
+            this.$refs.progressBar.style.width = "100%";
+            return true;
+          } else return false;
+      }
     },
     setTab(index) {
       // if(this.$refs.comp.validateForm()) {
@@ -126,8 +145,8 @@ export default {
 
 <style scoped lang="scss">
 $activeColor: white;
-$text-color: #4F668F;
-$blue: #A6E3FF;
+$text-color: #4f668f;
+$blue: #a6e3ff;
 $tab-bg: #ecf0fe;
 
 .tab {
@@ -136,6 +155,7 @@ $tab-bg: #ecf0fe;
     padding: 20px;
     display: flex;
     flex-flow: row nowrap;
+    font-size: 1.1rem;
     justify-content: center;
     align-items: center;
     opacity: 0.7;
@@ -146,11 +166,30 @@ $tab-bg: #ecf0fe;
     }
   }
 
+  &-btn-group {
+    margin-top: 40px;
+
+    button {
+      // background: #8a94f7;
+      background: #747ff2;
+      box-shadow: rgba(0, 0, 0, 0.15) 0px 15px 25px,
+        rgba(0, 0, 0, 0.05) 0px 5px 10px;
+      // background: linear-gradient(90deg, #8a94f7 0%, #737eea 100%);
+      border-color: transparent;
+      margin-left: 10px;
+      height: 45px;
+      font-size: 1.3rem;
+      font-weight: 400;
+    }
+  }
+
   &-group {
     background-color: $tab-bg;
     position: relative;
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
+    border-top-left-radius: 27px;
+    border-top-right-radius: 27px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px,
+      rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
   }
 
   &-number {
@@ -165,7 +204,7 @@ $tab-bg: #ecf0fe;
   &-active {
     opacity: 1;
     color: $activeColor;
-    
+
     .tab-number {
       color: $blue;
       background-color: white;
@@ -179,7 +218,7 @@ $tab-bg: #ecf0fe;
     border-top-left-radius: 20px;
     border-bottom-left-radius: 0;
     width: 33.33%;
-    width: 66.66%;
+    box-shadow: rgba(0, 0, 0, 0.3) 30px -2px 40px -25px;
     background: rgb(166, 227, 255);
     background: linear-gradient(
       90deg,
@@ -195,10 +234,15 @@ $tab-bg: #ecf0fe;
   }
 
   &-view-body {
-    padding: 20px 40px 30px 40px;
+    padding: 20px 40px 40px 40px;
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
-    border: 1px solid black;
+    background-color: #fcfcfc;
+  }
+
+  &-shadow {
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 8px 24px,
+      rgba(17, 17, 26, 0.1) 0px 16px 56px, rgba(17, 17, 26, 0.1) 0px 24px 80px;
   }
 }
 </style>

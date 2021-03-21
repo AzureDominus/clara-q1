@@ -6,7 +6,7 @@
         <h3 class="tab-content-title">Your Profile</h3>
         <span class="tab-content-desc"
           >Enter the login information for your account. You can change this
-          information at any time</span
+          information at any time.</span
         >
       </div>
     </div>
@@ -121,18 +121,5 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.gap {
-  margin: 30px;
-}
-.asterik {
-  color: blue;
-}
-.tab-container {
-  &-input {
-    &-label {
-      width: 100%;
-      text-align: left;
-    }
-  }
-}
+@import '../assets/tab-view.scss';
 </style>

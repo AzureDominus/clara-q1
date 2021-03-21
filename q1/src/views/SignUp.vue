@@ -20,7 +20,7 @@ export default {
     .tab-view {
         display: flex;
         flex-flow: column nowrap;
-        margin: 60px 20px 30px 20px;
+        margin: 0px 20px 30px 20px;
         // border: 1px solid red;
     }
     

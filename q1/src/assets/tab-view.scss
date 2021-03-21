@@ -1,0 +1,44 @@
+$inputcolor: rgba( $color: #9a9aa4cc, $alpha: 1, );
+.gap {
+    margin: 30px;
+}
+
+.asterik {
+    color: #32b2ee;
+    padding-left: 2px;
+}
+
+.tab-content {
+    &-step {
+        opacity: 0.7;
+    }
+    &-desc {
+        display: flex;
+        text-align: center;
+        max-width: 80%;
+        padding-left: 20%;
+        font-size: 1.05rem;
+    }
+}
+
+.tab-container {
+    &-input {
+        margin-bottom: 10px;
+        background-color: #fcfcfc;
+        border: 2px solid $inputcolor;
+        &::placeholder {
+            color: $inputcolor;
+        }
+        &-label {
+            margin-bottom: 5px;
+            width: 100%;
+            text-align: left;
+            font-size: 1.05rem;
+        }
+    }
+    &-select {
+        margin-bottom: 10px;
+        background-color: #fcfcfc;
+        border: 2px solid $inputcolor;
+    }
+}

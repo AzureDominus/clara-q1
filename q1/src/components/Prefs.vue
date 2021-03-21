@@ -17,7 +17,7 @@
           <label class="tab-container-input-label" for="color"
             >Theme Color<span class="asterik">*</span></label
           >
-          <select required class="form-control" name="color" id="color">
+          <select required class="form-control tab-container-select" name="color" id="color">
             <option disabled selected="selected" value="def">
               Choose an Option
             </option>
@@ -30,7 +30,7 @@
           <label class="tab-container-input-label" for="lang"
             >Language<span class="asterik"></span
           ></label>
-          <select class="form-control" required name="lang" id="lang">
+          <select class="form-control tab-container-select" required name="lang" id="lang">
             <option disabled selected="selected" value="def">
               Choose an Option
             </option>
@@ -45,7 +45,7 @@
           <label class="tab-container-input-label" for="plat"
             >Platform<span class="asterik"></span
           ></label>
-          <select class="form-control" required name="plat" id="plat">
+          <select class="form-control tab-container-select" required name="plat" id="plat">
             <option disabled selected="selected" value="def">
               Choose an Option
             </option>
@@ -113,18 +113,5 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.gap {
-  margin: 30px;
-}
-.asterik {
-  color: blue;
-}
-.tab-container {
-  &-input {
-    &-label {
-      width: 100%;
-      text-align: left;
-    }
-  }
-}
+@import '../assets/tab-view.scss';
 </style>
