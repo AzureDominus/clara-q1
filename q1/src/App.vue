@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <h2 class="title">Create New Account</h2>
+    <h2 ref="title" class="title">Create New Account</h2>
     <SignUp class="signup"></SignUp>
   </div>
 </template>
@@ -9,6 +9,11 @@ import SignUp from "@/views/SignUp.vue";
 
 export default {
   components: { SignUp },
+  methods: {
+    removeTitle() {
+      this.$refs.title.style.display = "none";
+    } 
+  }
 };
 </script>
 
@@ -31,9 +36,40 @@ export default {
 }
 
 .title {
-  font-weight: 200;
+  // font-weight: 200;
   font-size: 2.1rem;
   margin-bottom: 30px;
   color: white;
+}
+
+.signup {
+  width: auto;
+}
+
+@media screen and (max-width: 576px) {
+  #app {
+    justify-content: flex-start;
+  }
+  .signup {
+    width: 100%;
+    height: 100%;
+  }
+
+  .title {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 786px) {
+  .signup {
+    width: 70%;
+  }
+}
+
+@media screen and (max-width: 786px) {
+  .title {
+    margin-bottom: 10px;
+    margin-top: 30px;
+  }
 }
 </style>

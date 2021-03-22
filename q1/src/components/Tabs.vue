@@ -1,51 +1,62 @@
 <template>
-  <div class="container-fluid">
-    <template v-if="!done">
-      <!-- Actual tabs begin here -->
-      <div class="tab-shadow">
-        <div class="row tab-group">
-          <div
-            :class="{ 'tab-progress-done': activeTab(3) }"
-            ref="progressBar"
-            class="tab-progress"
-          ></div>
-          <div
-            class="tab-active tab-bar col"
-            @click="setTab(0)"
-          >
-            <span class="tab-number">1</span>Basic
-          </div>
-          <div
-            :class="{ 'tab-active': activeTab(2) }"
-            class="tab-bar col"
-            @click="setTab(1)"
-          >
-            <span class="tab-number">2</span>Personal
-          </div>
-          <div
-            :class="{ 'tab-active': activeTab(3) }"
-            class="tab-bar col"
-            @click="setTab(2)"
-          >
-            <span class="tab-number">3</span>Prefs
-          </div>
-        </div>
-        <!-- Tab view begins here -->
-        <div class="row">
-          <div class="tab-view-body">
-            <keep-alive>
-              <router-view ref="comp"></router-view>
-            </keep-alive>
-          </div>
-        </div>
-      </div>
-      <div class="row tab-btn-group justify-content-end">
-        <button class="col-2 btn btn-primary" @click="backTab">Back</button>
-        <button class="col-2 btn btn-primary" @click="nextTab">Next</button>
-      </div>
-    </template>
-    <div v-if="done" class="row">
+  <div :class="{ 'container-center': done }" class="container-fluid">
+    <div v-if="done" class="virus-msg">
       <div class="upload-info">{{ virusMsg }}</div>
+      <div v-if="!virusDone" class="loader"></div>
+    </div>
+    <!-- Actual tabs begin here -->
+    <div class="tab-shadow">
+      <div v-if="!done" class="row tab-group">
+        <div
+          :class="{ 'tab-progress-done': activeTab(3) }"
+          ref="progressBar"
+          class="tab-progress"
+        ></div>
+        <div class="tab-active tab-bar col-4" @click="setTab(0)">
+          <span class="tab-number">1</span>Basic
+        </div>
+        <div
+          :class="{ 'tab-active': activeTab(2) }"
+          class="tab-bar col-4"
+          @click="setTab(1)"
+        >
+          <span class="tab-number">2</span>Private
+        </div>
+        <div
+          :class="{ 'tab-active': activeTab(3) }"
+          class="tab-bar col-4"
+          @click="setTab(2)"
+        >
+          <span class="tab-number">3</span>Prefs
+        </div>
+      </div>
+      <!-- Tab view begins here -->
+      <div v-if="!done" class="row">
+        <div class="tab-view-body">
+          <keep-alive>
+            <router-view ref="comp"></router-view>
+          </keep-alive>
+        </div>
+      </div>
+    </div>
+    <div v-if="!done" class="row tab-btn-group justify-content-end">
+      <button
+        :disabled="firstPage()"
+        class="d-none d-md-block col-md-2 col-sm-12 btn btn-primary"
+        @click="backTab"
+      >
+        Back
+      </button>
+      <button class="col-md-2 col-sm-12 btn btn-primary" @click="nextTab">
+        Next
+      </button>
+      <button
+        :disabled="firstPage()"
+        class="d-md-none col-sm-12 btn btn-primary mt-2"
+        @click="backTab"
+      >
+        Back
+      </button>
     </div>
   </div>
 </template>
@@ -64,8 +75,12 @@ export default {
     done: false,
     virusMsg: "Uploaded file is being scanned for viruses...",
     resource: "",
+    virusDone: false,
   }),
   methods: {
+    firstPage() {
+      return (this.$router.currentRoute.name.toLowerCase() == 'basic');
+    },
     activeTab(id) {
       var routeName = this.$router.currentRoute.name.toLowerCase();
       switch (id) {
@@ -87,20 +102,20 @@ export default {
       }
     },
     setTab(index) {
-      // if(this.$refs.comp.validateForm()) {
-      this.tabIndex = index;
-      this.$router.push(this.tabs[this.tabIndex]);
-      // }
+      if (this.$refs.comp.validateForm()) {
+        this.tabIndex = index;
+        this.$router.push(this.tabs[this.tabIndex]);
+      }
     },
     nextTab() {
       this.activeTab(0);
-      // if(this.$refs.comp.validateForm())
-      if (this.tabs.length - 1 > this.tabIndex) {
-        this.tabIndex++;
-        this.$router.push(this.tabs[this.tabIndex]);
-      } else {
-        this.beginScan();
-      }
+      if (this.$refs.comp.validateForm())
+        if (this.tabs.length - 1 > this.tabIndex) {
+          this.tabIndex++;
+          this.$router.push(this.tabs[this.tabIndex]);
+        } else {
+          this.beginScan();
+        }
     },
     backTab() {
       if (this.tabIndex > 0) {
@@ -110,6 +125,7 @@ export default {
     },
     beginScan() {
       this.done = true;
+      this.$parent.$parent.removeTitle();
       this.$refs.comp.uploadFile();
     },
     checkVirus(res) {
@@ -138,6 +154,7 @@ export default {
       } else tmp_msg += `The file is infected!`;
 
       this.virusMsg = tmp_msg;
+      this.virusDone = true;
     },
   },
 };
@@ -148,6 +165,38 @@ $activeColor: white;
 $text-color: #4f668f;
 $blue: #a6e3ff;
 $tab-bg: #ecf0fe;
+
+.virus-msg {
+  border-radius: 20px;
+  padding: 40px 20px 40px 20px;
+  background-color: #fcfcfc;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  box-shadow: rgba(17, 17, 26, 0.1) 0px 8px 24px,
+    rgba(17, 17, 26, 0.1) 0px 16px 56px, rgba(17, 17, 26, 0.1) 0px 24px 80px;
+}
+
+@media screen and (max-width: 576px) {
+  .virus-msg {
+    width: 100%;
+  }
+}
+
+@media screen and (min-width: 786px) {
+  .virus-msg {
+    min-width: 60%;
+  }
+}
+
+.container-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
 
 .tab {
   &-bar {
@@ -168,6 +217,9 @@ $tab-bg: #ecf0fe;
 
   &-btn-group {
     margin-top: 40px;
+    @media screen and (max-width: 576px) {
+      margin: 10px 0px 10px 0px;
+    }
 
     button {
       // background: #8a94f7;
@@ -233,6 +285,21 @@ $tab-bg: #ecf0fe;
     }
   }
 
+  @media screen and (max-width: 576px) {
+    &-group {
+      border-top-left-radius: 0px;
+      border-top-right-radius: 0px;
+    }
+
+    &-progress {
+      border-top-left-radius: 0px;
+
+      &-done {
+        border-top-right-radius: 0px;
+      }
+    }
+  }
+
   &-view-body {
     padding: 20px 40px 40px 40px;
     border-bottom-left-radius: 20px;
@@ -243,6 +310,50 @@ $tab-bg: #ecf0fe;
   &-shadow {
     box-shadow: rgba(17, 17, 26, 0.1) 0px 8px 24px,
       rgba(17, 17, 26, 0.1) 0px 16px 56px, rgba(17, 17, 26, 0.1) 0px 24px 80px;
+  }
+}
+
+//CSS loading spinner taken from https://projects.lukehaas.me/css-loaders/
+
+.loader,
+.loader:after {
+  border-radius: 50%;
+  width: 10em;
+  height: 10em;
+}
+.loader {
+  margin: 30px auto 10px auto;
+  font-size: 0.5rem;
+  position: relative;
+  text-indent: -9999em;
+  border-top: 1.1em solid rgba(#4f668f, 0.2);
+  border-right: 1.1em solid rgba(#4f668f, 0.2);
+  border-bottom: 1.1em solid rgba(#4f668f, 0.2);
+  border-left: 1.1em solid #8a94f7;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation: load8 1.1s infinite linear;
+  animation: load8 1.1s infinite linear;
+}
+@-webkit-keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 </style>
