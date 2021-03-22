@@ -92,7 +92,7 @@ export default {
       var formData = new FormData();
       formData.append("file", this.file);
       this.$http
-        .post("http://localhost/api/proxy.php", formData, {
+        .post(process.env.VUE_APP_PROXY_URL, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

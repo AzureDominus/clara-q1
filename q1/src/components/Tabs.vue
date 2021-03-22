@@ -130,7 +130,7 @@ export default {
     },
     checkVirus(res) {
       this.$http
-        .post("http://localhost/api/proxy.php", {
+        .post(process.env.VUE_APP_PROXY_URL, {
           resource: res,
         })
         .then((response) => {
